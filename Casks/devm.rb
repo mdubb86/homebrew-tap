@@ -5,15 +5,15 @@ cask "devm" do
                    args: ["-rd", "com.apple.quarantine", staged_path]
   end
 
-  version "0.3.0"
+  version "0.3.1"
 
   on_macos do
     on_intel do
-      sha256 "60310f616b848cc85403eeb69bc3ea9e5f203d70f4cd824505b9904619e900ca"
+      sha256 "1ed64ca9aa6884025adb9841097883f04168c665001ea68463b0c868b162e1e9"
       url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_amd64.tar.gz"
     end
     on_arm do
-      sha256 "b601e6a72866743a35daa5a28bb0f77a7d96ec42077f65d7093d60b7bf51c7e2"
+      sha256 "f8d8da9c48c393d4f45c77b6a316fdafa370a9bb09cfee32e96129cb20093ee0"
       url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
     end
   end
