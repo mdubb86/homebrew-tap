@@ -3,23 +3,25 @@ cask "devm" do
   postflight do
     system_command "/usr/bin/xattr",
                    args: ["-rd", "com.apple.quarantine", staged_path]
+    # If the devm service is installed, restart it so it picks up
+    # this newly-installed binary. Best-effort — silent when the
+    # service isn't registered (a fresh install) or isn't running.
+    system_command "#{HOMEBREW_PREFIX}/bin/devm",
+                   args: ["restart"],
+                   must_succeed: false
   end
 
-  version "0.3.1"
+  version "0.4.0"
 
   on_macos do
-    on_intel do
-      sha256 "1ed64ca9aa6884025adb9841097883f04168c665001ea68463b0c868b162e1e9"
-      url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_amd64.tar.gz"
-    end
     on_arm do
-      sha256 "f8d8da9c48c393d4f45c77b6a316fdafa370a9bb09cfee32e96129cb20093ee0"
+      sha256 "0a5d3e795e46531a00c362e2c47c363e813607f8c4a33f1fb306c8f89b6fc410"
       url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
     end
   end
 
   name "devm"
-  desc "Mac dev sandbox tool (wraps Docker Sandboxes)"
+  desc "Mac dev sandbox tool (wraps Tart VMs + iron-proxy egress enforcement)"
   homepage "https://github.com/mdubb86/devm"
 
   livecheck do
