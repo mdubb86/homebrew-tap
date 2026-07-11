@@ -11,11 +11,11 @@ cask "devm" do
                    must_succeed: false
   end
 
-  version "0.7.0"
+  version "0.7.1"
 
   on_macos do
     on_arm do
-      sha256 "8ab875fc06e4ae06dcea83aafbbdda4698a1fb43835826fe330e59577349fa11"
+      sha256 "a7a3035ae0bd748178459470180e4b27e4ce1541795364ce8dcdbb6492d8f41f"
       url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
     end
   end
