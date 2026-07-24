@@ -3,19 +3,27 @@ cask "devm" do
   postflight do
     system_command "/usr/bin/xattr",
                    args: ["-rd", "com.apple.quarantine", staged_path]
-    # If the devm service is installed, restart it so it picks up
-    # this newly-installed binary. Best-effort — silent when the
-    # service isn't registered (a fresh install) or isn't running.
+    # After the binary swap, run `devm install` to bootout+bootstrap
+    # both the daemon and helper plists on the new binary. Same as
+    # what `devm upgrade` does for direct-install users (upgrade.go
+    # re-execs the new binary as `devm install`) — this keeps the
+    # brew and direct-install upgrade paths converged. Requires
+    # sudo/TouchID; brew inherits the terminal's TTY when invoked
+    # via `brew upgrade`, so the prompt surfaces to the user.
+    # must_succeed: false — a headless brew run without a TTY
+    # skips silently; the CLI's Fingerprint drift check then
+    # catches the user on their next daemon-touching command
+    # with the actionable "run `devm install`" message.
     system_command "#{HOMEBREW_PREFIX}/bin/devm",
-                   args: ["restart"],
+                   args: ["install"],
                    must_succeed: false
   end
 
-  version "0.9.3"
+  version "0.9.4"
 
   on_macos do
     on_arm do
-      sha256 "4d3cc197835c00f64e7086f44f54c061b98be98ec76d39e4df5fb1e3cbd1e209"
+      sha256 "34a178b73490103cfaf64afcb6fec441ffeaa0cffcce9098e3842cd47800ac25"
       url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
     end
   end
