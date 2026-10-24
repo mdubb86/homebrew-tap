@@ -21,13 +21,12 @@ cask "devm" do
                    must_succeed: false
   end
 
-  version "0.27.2"
+  version "0.28.0"
 
   on_macos do
-    on_arm do
-      sha256 "3400c578bc193da185cf1e503441edd66c845aa9e117adc0f40ae5eaca37801e"
-      url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
-    end
+    depends_on arch: :arm64
+    sha256 "7d17660ae022ca135b86ff544ca16c23884cc7a9e8a2655b949afd6256d143e2"
+    url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
   end
 
   name "devm"
@@ -37,6 +36,7 @@ cask "devm" do
   livecheck do
     skip "Auto-generated on release."
   end
+  depends_on :macos
 
   binary "devm"
 
