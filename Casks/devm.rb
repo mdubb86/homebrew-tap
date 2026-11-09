@@ -12,20 +12,29 @@ cask "devm" do
     # brew and direct-install upgrade paths converged. Requires
     # sudo/TouchID; brew inherits the terminal's TTY when invoked
     # via `brew upgrade`, so the prompt surfaces to the user.
+    #
+    # Explicit PATH: brew's system_command runs with a stripped
+    # environment that does NOT include #{HOMEBREW_PREFIX}/bin, so
+    # `devm install` cannot otherwise find tart (or any other
+    # Homebrew-installed dependency) via exec.LookPath. The CLI's
+    # own tart check is scoped to the base-image build, so this
+    # mostly guards transitive lookups and future preconditions.
+    #
     # must_succeed: false — a headless brew run without a TTY
     # skips silently; the CLI's Fingerprint drift check then
     # catches the user on their next daemon-touching command
     # with the actionable "run `devm install`" message.
     system_command "#{HOMEBREW_PREFIX}/bin/devm",
                    args: ["install"],
+                   env: { "PATH" => "#{HOMEBREW_PREFIX}/bin:/usr/local/bin:/usr/bin:/bin" },
                    must_succeed: false
   end
 
-  version "0.28.1"
+  version "0.28.2"
 
   on_macos do
     depends_on arch: :arm64
-    sha256 "863290048da0f2ea3ad3c0be6e8a94e4ebe14fb6a7ad0e9995a25ee9c4281f79"
+    sha256 "dced435f734dcdf2c37534bb1f7ecf071ceb99f357c21065d14a12bd979d0e9c"
     url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
   end
 
@@ -40,5 +49,5 @@ cask "devm" do
 
   binary "devm"
 
-  # No zap stanza required
+  zap :not_required
 end
