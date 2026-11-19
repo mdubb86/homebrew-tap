@@ -25,11 +25,11 @@ cask "devm" do
     a stale daemon.
   EOS
 
-  version "0.33.0"
+  version "0.33.1"
 
   on_macos do
     depends_on arch: :arm64
-    sha256 "d0193f1bcf17fbcfbe129fe2a15d987f330c9745bb6dbf6673f3bc9151cefa59"
+    sha256 "71d20903e62e2ea403d7ed71cbec51ab1ed9b456593d34251438233a05028ca2"
     url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
   end
 
