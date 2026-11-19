@@ -2,7 +2,7 @@
 cask "devm" do
   app "devm.app"
 
-  postflight_steps do
+  postflight do
     system_command "/usr/bin/xattr",
                    args: ["-rd", "com.apple.quarantine", staged_path]
   end
@@ -25,11 +25,11 @@ cask "devm" do
     a stale daemon.
   EOS
 
-  version "0.33.1"
+  version "0.33.2"
 
   on_macos do
     depends_on arch: :arm64
-    sha256 "71d20903e62e2ea403d7ed71cbec51ab1ed9b456593d34251438233a05028ca2"
+    sha256 "4ebb25d2ba7e6c5fc5e29797586bfa29ac038b753037a3e6b86f7fbc0a6299d4"
     url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
   end
 
