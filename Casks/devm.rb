@@ -2,39 +2,34 @@
 cask "devm" do
   app "devm.app"
 
-  postflight do
+  postflight_steps do
     system_command "/usr/bin/xattr",
                    args: ["-rd", "com.apple.quarantine", staged_path]
-    # After the binary swap, run `devm install` to bootout+bootstrap
-    # both the daemon and helper plists on the new binary. Same as
-    # what `devm upgrade` does for direct-install users (upgrade.go
-    # re-execs the new binary as `devm install`) — this keeps the
-    # brew and direct-install upgrade paths converged. Requires
-    # sudo/TouchID; brew inherits the terminal's TTY when invoked
-    # via `brew upgrade`, so the prompt surfaces to the user.
-    #
-    # Explicit PATH: brew's system_command runs with a stripped
-    # environment that does NOT include #{HOMEBREW_PREFIX}/bin, so
-    # `devm install` cannot otherwise find tart (or any other
-    # Homebrew-installed dependency) via exec.LookPath. The CLI's
-    # own tart check is scoped to the base-image build, so this
-    # mostly guards transitive lookups and future preconditions.
-    #
-    # must_succeed: false — a headless brew run without a TTY
-    # skips silently; the CLI's Fingerprint drift check then
-    # catches the user on their next daemon-touching command
-    # with the actionable "run `devm install`" message.
-    system_command "#{HOMEBREW_PREFIX}/bin/devm",
-                   args: ["install"],
-                   env: { "PATH" => "#{HOMEBREW_PREFIX}/bin:/usr/local/bin:/usr/bin:/bin" },
-                   must_succeed: false
   end
 
-  version "0.32.0"
+  caveats <<~EOS
+    devm installs a system LaunchDaemon (com.devm.service) that owns
+    privileged guest-VM setup. brew upgrade swaps the CLI binary, but
+    the running daemon keeps its loaded code until it is reinstalled
+    — which requires sudo/TouchID that a non-interactive brew run
+    has no way to prompt for.
+
+    To finish the upgrade, run:
+
+      devm install
+
+    Every daemon-touching command (shell, start, exec, stop, propose,
+    reconcile, teardown, route) also checks for CLI/daemon drift on
+    entry and refuses with the same instruction if the install has
+    not been run yet, so there is no path where you silently talk to
+    a stale daemon.
+  EOS
+
+  version "0.33.0"
 
   on_macos do
     depends_on arch: :arm64
-    sha256 "6c1ee0129e2933220590e43a583f07bd0cd8e980e050dcb0121054c3ace9c98d"
+    sha256 "d0193f1bcf17fbcfbe129fe2a15d987f330c9745bb6dbf6673f3bc9151cefa59"
     url "https://github.com/mdubb86/devm/releases/download/v#{version}/devm_v#{version}_darwin_arm64.tar.gz"
   end
 
